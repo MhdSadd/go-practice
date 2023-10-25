@@ -5,16 +5,16 @@ import (
 
 	"fmt"
 
-	"spincity.com/spincity/backend/models"
+	"os"
+
+	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
-	"os"
-	"github.com/joho/godotenv"
+	"spincity.com/spincity/backend/models"
 )
 
-
-func getEnv (key string) string {
-	err:= godotenv.Load(".env")
+func getEnv(key string) string {
+	err := godotenv.Load(".env")
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -22,23 +22,20 @@ func getEnv (key string) string {
 }
 
 func InitializeDb() *gorm.DB {
-	password:= getEnv("POSTGRES_PASSWORD")
+	password := getEnv("POSTGRES_PASSWORD")
 
-	dbURL:= fmt.Sprintf("postgres://postgres:%s@localhost:5432/spincity", password)
+	dbURL := fmt.Sprintf("postgres://postgres:%s@localhost:5432/spincity", password)
 
 	db, err := gorm.Open(postgres.Open(dbURL), &gorm.Config{})
 
-	if err != nil{
+	if err != nil {
 		log.Fatalln(err)
-	} else{
+	} else {
 		fmt.Println("Connected to db Successfully")
 	}
 
-
 	db.AutoMigrate(&models.Vinylrecord{})
 
-
-return db
-
+	return db
 
 }
